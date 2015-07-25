@@ -16,20 +16,10 @@ Platform assembly: C:\Users\Jinwoo\Documents\OutOfClass\Build\OutOfClass_Data\Ma
 Loading C:\Users\Jinwoo\Documents\OutOfClass\Build\OutOfClass_Data\Managed\UnityEngine.Networking.dll into Unity Child Domain
 Platform assembly: C:\Users\Jinwoo\Documents\OutOfClass\Build\OutOfClass_Data\Managed\UnityEngine.Analytics.dll (this message is harmless)
 Loading C:\Users\Jinwoo\Documents\OutOfClass\Build\OutOfClass_Data\Managed\UnityEngine.Analytics.dll into Unity Child Domain
-Platform assembly: C:\Users\Jinwoo\Documents\OutOfClass\Build\OutOfClass_Data\Managed\UnityEngine.Networking.dll (this message is harmless)
-Loading C:\Users\Jinwoo\Documents\OutOfClass\Build\OutOfClass_Data\Managed\UnityEngine.Networking.dll into Unity Child Domain
-Platform assembly: C:\Users\Jinwoo\Documents\OutOfClass\Build\OutOfClass_Data\Managed\UnityEngine.UI.dll (this message is harmless)
-Loading C:\Users\Jinwoo\Documents\OutOfClass\Build\OutOfClass_Data\Managed\UnityEngine.UI.dll into Unity Child Domain
-- Completed reload, in  0.051 seconds
+- Completed reload, in  0.040 seconds
 desktop: 1920x1080 60Hz; virtual: 1920x1080 at 0,0
 <RI> Initializing input.
 <RI> Input initialized.
 <RI> Initialized touch support.
 Platform assembly: C:\Users\Jinwoo\Documents\OutOfClass\Build\OutOfClass_Data\Managed\System.Core.dll (this message is harmless)
 Platform assembly: C:\Users\Jinwoo\Documents\OutOfClass\Build\OutOfClass_Data\Managed\System.dll (this message is harmless)
-Unloading 3 Unused Serialized files (Serialized files now loaded: 0)
-UnloadTime: 3.384224 ms
-
-Unloading 17 unused Assets to reduce memory usage. Loaded Objects now: 299.
-Total: 0.158909 ms (FindLiveObjects: 0.011413 ms CreateObjectMapping: 0.012876 ms MarkObjects: 0.123206 ms  DeleteObjects: 0.011120 ms)
-

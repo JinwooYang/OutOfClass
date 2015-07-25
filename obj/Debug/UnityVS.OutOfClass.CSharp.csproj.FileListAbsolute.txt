@@ -1,0 +1,17 @@
+C:\Users\Jinwoo\Documents\OutOfClass\obj\Debug\UnityVS.OutOfClass.CSharp.csprojResolveAssemblyReference.cache
+C:\Users\Jinwoo\Documents\OutOfClass\Temp\UnityVS_bin\Debug\Assembly-CSharp.dll
+C:\Users\Jinwoo\Documents\OutOfClass\Temp\UnityVS_bin\Debug\Assembly-CSharp.pdb
+C:\Users\Jinwoo\Documents\OutOfClass\Temp\UnityVS_bin\Debug\UnityEditor.dll
+C:\Users\Jinwoo\Documents\OutOfClass\Temp\UnityVS_bin\Debug\UnityEditor.iOS.Extensions.Xcode.dll
+C:\Users\Jinwoo\Documents\OutOfClass\Temp\UnityVS_bin\Debug\UnityEngine.Analytics.dll
+C:\Users\Jinwoo\Documents\OutOfClass\Temp\UnityVS_bin\Debug\UnityEngine.dll
+C:\Users\Jinwoo\Documents\OutOfClass\Temp\UnityVS_bin\Debug\UnityEngine.Networking.dll
+C:\Users\Jinwoo\Documents\OutOfClass\Temp\UnityVS_bin\Debug\UnityEngine.UI.dll
+C:\Users\Jinwoo\Documents\OutOfClass\Temp\UnityVS_bin\Debug\UnityEngine.xml
+C:\Users\Jinwoo\Documents\OutOfClass\Temp\UnityVS_bin\Debug\UnityEditor.xml
+C:\Users\Jinwoo\Documents\OutOfClass\Temp\UnityVS_bin\Debug\UnityEngine.UI.xml
+C:\Users\Jinwoo\Documents\OutOfClass\Temp\UnityVS_bin\Debug\UnityEngine.Networking.xml
+C:\Users\Jinwoo\Documents\OutOfClass\Temp\UnityVS_bin\Debug\UnityEngine.Analytics.xml
+C:\Users\Jinwoo\Documents\OutOfClass\Temp\UnityVS_bin\Debug\UnityEditor.iOS.Extensions.Xcode.xml
+C:\Users\Jinwoo\Documents\OutOfClass\obj\Debug\Assembly-CSharp.dll
+C:\Users\Jinwoo\Documents\OutOfClass\obj\Debug\Assembly-CSharp.pdb

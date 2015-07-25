@@ -60,33 +60,17 @@
     <Reference Include="UnityEngine.Analytics">
       <HintPath>Library\UnityAssemblies\UnityEngine.Analytics.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEngine.Networking">
-      <HintPath>Library\UnityAssemblies\UnityEngine.Networking.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.UI">
-      <HintPath>Library\UnityAssemblies\UnityEngine.UI.dll</HintPath>
-    </Reference>
     <Reference Include="UnityEditor.iOS.Extensions.Xcode">
       <HintPath>Library\UnityAssemblies\UnityEditor.iOS.Extensions.Xcode.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Monster.cs" />
-    <Compile Include="Assets\Scripts\Action\Action.cs" />
-    <Compile Include="Assets\Scripts\Action\Actor.cs" />
-    <Compile Include="Assets\Scripts\Action\DelayTime.cs" />
-    <Compile Include="Assets\Scripts\Action\MoveTo.cs" />
-    <Compile Include="Assets\Scripts\Action\RepeatForever.cs" />
-    <Compile Include="Assets\Scripts\Action\ScaleTo.cs" />
-    <Compile Include="Assets\Scripts\Action\SelfRemove.cs" />
-    <Compile Include="Assets\Scripts\Action\Sequence.cs" />
-    <Compile Include="Assets\Scripts\Action\TargetedAction.cs" />
-    <Compile Include="Assets\Scripts\Action\TintTo.cs" />
-    <Compile Include="Assets\Scripts\Action\Vibration.cs" />
     <Compile Include="Assets\Scripts\Follow.cs" />
-    <Compile Include="Assets\Scripts\HowToPlayImage.cs" />
+    <Compile Include="Assets\Scripts\MapManager.cs" />
+    <Compile Include="Assets\Scripts\PathFinder.cs" />
     <Compile Include="Assets\Scripts\Player.cs" />
-    <Compile Include="Assets\Scripts\TItleSceneButtonListener.cs" />
+    <Compile Include="Assets\Scripts\TitleUIButtonListener.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2013\UnityVS.CSharp.targets" />
 </Project>
