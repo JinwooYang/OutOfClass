@@ -21,14 +21,18 @@ public class Monster : MonoBehaviour
         enemyCollider = GetComponent<BoxCollider2D>();
         enemySight = GetComponent<CircleCollider2D>();
 
-        pathFinder.SetDestination(playerTransform.position, chaseSpeed);
+        StartCoroutine(GoToPlayer());
 	}
 	
-	// Update is called once per frame
-	void Update () 
-    {
-	}
 
+    IEnumerator GoToPlayer()
+    {
+        while(true)
+        {
+            pathFinder.SetDestination(playerTransform.position, chaseSpeed);
+            yield return new WaitForSeconds(10f);
+        }
+    }
 
     //void OnTriggerStay2D(Collider2D other)
     //{

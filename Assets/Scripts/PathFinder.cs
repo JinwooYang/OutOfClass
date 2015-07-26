@@ -12,34 +12,37 @@ public class PathFinder : MonoBehaviour
 
     float moveSpeed = 0f;
 
-    bool startCoroutine = false;
+    bool startFollowPathCoroutine = false;
 
     public void SetDestination(Vector2 targetPos, float speed)
     {
         movePosStack.Clear();
         mapManager.GetPath(movePosStack, cachedTransform.position, targetPos);
         moveSpeed = speed;
-        if (!startCoroutine)
+        if (!startFollowPathCoroutine)
         {
             StartCoroutine(FollowPath());
-            startCoroutine = true;
+            startFollowPathCoroutine = true;
         }
     }
 
     IEnumerator FollowPath()
     {
-        while (movePosStack.Count != 0)
+        while (true)
         {
-            Vector3 targetPos = movePosStack.Pop();
-
-            //while (movePosStack.Count != 0)
+            if (movePosStack.Count != 0)
             {
-                //cachedTransform.position = Vector2.MoveTowards(cachedTransform.position, targetPos, moveSpeed * Time.deltaTime);
-                cachedTransform.position = targetPos;
-                yield return new WaitForSeconds(1f);
+                Vector3 targetPos = movePosStack.Pop();
+
+                //while (movePosStack.Count != 0)
+                {
+                    //cachedTransform.position = Vector2.MoveTowards(cachedTransform.position, targetPos, moveSpeed * Time.deltaTime);
+                    cachedTransform.position = targetPos;
+                    yield return new WaitForSeconds(0.1f);
+                }
             }
+            yield return null;
         }
-        yield return null;
     }
 
     void Awake()

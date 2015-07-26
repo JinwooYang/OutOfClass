@@ -34,6 +34,7 @@ class Tile : IComparable<Tile>
     {
         state = TileState.BEFORE_INQUIRY;
         gCost = hCost = 0;
+        parent = null;
     }
 
     public bool IsNonWalkable()
@@ -54,7 +55,7 @@ public class MapManager : MonoBehaviour
 
     public BoxCollider2D[] obstacles;
 
-    const int TILE_SIZE = 42;
+    const int TILE_SIZE = 61;
     const int MAP_IMAGE_SIZE = 2562;
 
     const int TILE_COL = MAP_IMAGE_SIZE / TILE_SIZE, TILE_ROW = MAP_IMAGE_SIZE / TILE_SIZE;
@@ -103,12 +104,12 @@ public class MapManager : MonoBehaviour
             openTileList.Remove(curTile);
             curTile.state = TileState.CLOSED;
 
-            SearchNeighborTile(curTile);
+            SearchNeighborTile(curTile, targetTile);
         }
     }
 
     //인접한 타일을 검사하여 g,h,f값 계산, 부모 지정, 열린노드지정 처리
-    void SearchNeighborTile(Tile stdTile)
+    void SearchNeighborTile(Tile stdTile, Tile targetTile)
     {
         int minCol = Mathf.Clamp(stdTile.col - 1, 0, TILE_COL - 1);
         int maxCol = Mathf.Clamp(stdTile.col + 1, 0, TILE_COL - 1);
@@ -134,6 +135,32 @@ public class MapManager : MonoBehaviour
                 int tempGCost = stdTile.gCost;
                 tempGCost += (stdTile.col - col != 0 && stdTile.row - row != 0) ? DIAGONAL_G_COST : NON_DIAGONAL_G_COST;
 
+                //h값 계산을 위한 가로 길이 계산
+                int widthDist;
+                if(targetTile.col > curTile.col)
+                {
+                    widthDist = targetTile.col - curTile.col;
+                }
+                else
+                {
+                    widthDist = curTile.col - targetTile.col;
+                }
+
+                //h값 계산을 위한 세로 길이 계산
+                int heightDist;
+                if (targetTile.row > curTile.row)
+                {
+                    heightDist = targetTile.row - curTile.row;
+                }
+                else
+                {
+                    heightDist = curTile.row - targetTile.row;
+                }
+
+
+                int hCost = (widthDist + heightDist) * NON_DIAGONAL_G_COST;
+                curTile.hCost = hCost;
+
                 switch (curTile.state)
                 {
                     //타일이 검사 전 상태라면 현재 타일을 오픈 리스트에 추가한 뒤, 현재 타일의 g값을 임시 g값으로 한다.
@@ -142,6 +169,7 @@ public class MapManager : MonoBehaviour
                         curTile.state = TileState.OPENED;
                         curTile.parent = stdTile;
                         curTile.gCost = tempGCost;
+
                         break;
 
                     //이미 열린 타일이라면 임시 g값과 기준 노드의 g값을 비교하여 임시 g값이 더 작으면 
@@ -192,6 +220,8 @@ public class MapManager : MonoBehaviour
 
     void MapReset()
     {
+        openTileList.Clear();
+
         //벽이 아닌 타일들을 모두 조사 전 상태로 되돌린다.
         for (int tileIdx = 0; tileIdx < TILE_COL * TILE_ROW; ++tileIdx)
         {
@@ -201,6 +231,7 @@ public class MapManager : MonoBehaviour
             if(tiles[col, row].state != TileState.WALL)
             {
                 tiles[col, row].Reset();
+
             }
         }
     }
