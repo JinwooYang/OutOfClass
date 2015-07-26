@@ -1,22 +1,33 @@
 ﻿using UnityEngine;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
 public enum TileState { BEFORE_INQUIRY, OPENED, CLOSED, WALL };
 
-class Tile
+class Tile : IComparable<Tile>
 {
     public Tile parent;
 
-    public TileState state = TileState.BEFORE_INQUIRY;
-    public int gCost = 0;
-    public int hCost = 0;
+    public TileState state;
+    public int col, row;
+    public int gCost;
+    public int hCost;
     public int fCost
     {
         get
         {
             return gCost + hCost;
         }
+    }
+
+    public Tile(int col, int row)
+    {
+        this.col = col;
+        this.row = row;
+
+        gCost = hCost = 0;
+        state = TileState.BEFORE_INQUIRY;
     }
 
     public void Reset()
@@ -29,98 +40,125 @@ class Tile
     {
         return (state == TileState.CLOSED || state == TileState.WALL);
     }
+
+    public int CompareTo(Tile tile)
+    {
+        return this.fCost - tile.fCost;
+    }
 }
 
 
 public class MapManager : MonoBehaviour 
 {
-    public BoxCollider2D[] walls;
-    
-    const int TILE_COL = 2547, TILE_ROW = 2562;
+    public bool showGrid = true;
+
+    public BoxCollider2D[] obstacles;
+
+    const int TILE_SIZE = 42;
+    const int MAP_IMAGE_SIZE = 2562;
+
+    const int TILE_COL = MAP_IMAGE_SIZE / TILE_SIZE, TILE_ROW = MAP_IMAGE_SIZE / TILE_SIZE;
     Tile[,] tiles = new Tile[TILE_COL, TILE_ROW];
 
-    //const int DIAGONAL_G_COST = 14;
-    //const int NON_DIAGONAL_G_COST = 10;
+    const int DIAGONAL_G_COST = 14;
+    const int NON_DIAGONAL_G_COST = 10;
 
-    //List<Tile> openTileList = new List<Tile>();
+    List<Tile> openTileList = new List<Tile>();
 
-    //public void SetTileState(int col, int row, TileState state)
-    //{
-    //    tiles[col, row].state = state;
-    //}
+    public void SetTileState(int col, int row, TileState state)
+    {
+        tiles[col, row].state = state;
+    }
 
-    //public void SetTileState(Vector2 pos, TileState state)
-    //{
-    //    tiles[(int)pos.x, (int)pos.y].state = state;
-    //}
 
-    //public void GetPath(Stack<Vector2> outStack, Vector2 startPos, Vector2 targetPos)
-    //{
-    //    MapReset();
+    public void GetPath(Stack<Vector2> outStack, Vector2 startPos, Vector2 targetPos)
+    {
+        MapReset();
 
-    //    Tile selectedTile = GetTileFromPos(startPos);
-    //    selectedTile.state = TileState.CLOSED;
+        int startCol = Mathf.Clamp((int)startPos.x / TILE_SIZE, 0, TILE_COL - 1);
+        int startRow = Mathf.Clamp((int)startPos.y / TILE_SIZE, 0, TILE_ROW - 1);
+        int targetCol = Mathf.Clamp((int)targetPos.x / TILE_SIZE, 0, TILE_COL - 1);
+        int targetRow = Mathf.Clamp((int)targetPos.y / TILE_SIZE, 0, TILE_ROW - 1);
 
-    //    //working...
-    //}
+        Tile startTile = tiles[startCol, startRow];
+        Tile targetTile = tiles[targetCol, targetRow];
 
-    //Tile GetTileFromPos(Vector2 pos)
-    //{
-    //    return tiles[(int)pos.x, (int)pos.y];
-    //}
+        startTile.state = TileState.OPENED;
+        openTileList.Add(startTile);
 
-    //void SearchNeighborTile(Stack<Vector2> outStack, int stdCol, int stdRow, int targetCol, int targetRow)
-    //{
-    //    Tile stdTile = tiles[stdCol, stdRow];
-    //    Tile targetTile = tiles[targetCol, targetRow];
+        while (openTileList.Count > 0)
+        {
+            Tile curTile = openTileList[0];
 
-    //    int minCol = Mathf.Clamp(stdCol - 1, 0, TILE_COL - 1);
-    //    int maxCol = Mathf.Clamp(stdCol + 1, 0, TILE_COL - 1);
-    //    int minRow = Mathf.Clamp(stdRow - 1, 0, TILE_ROW - 1);
-    //    int maxRow = Mathf.Clamp(stdRow + 1, 0, TILE_ROW - 1);
+            if (curTile == targetTile)
+            {
+                for (Tile tile = curTile; tile != null; tile = tile.parent)
+                {
+                    Vector2 pos = (Vector2.right * tile.col + Vector2.up * tile.row) * TILE_SIZE;
+                    outStack.Push(pos);
+                }
+                return;
+            }   
 
-    //    for (int tileIdx = minCol * minRow; tileIdx <= maxCol * maxRow; ++tileIdx)
-    //    {
-    //        int col = tileIdx % TILE_COL;
-    //        int row = tileIdx / TILE_COL;
+            openTileList.Remove(curTile);
+            curTile.state = TileState.CLOSED;
 
-    //        Tile curTile = tiles[col, row];
+            SearchNeighborTile(curTile);
+        }
+    }
 
-    //        if((col == stdCol && row == stdRow) ||
-    //            curTile.IsNonWalkable())
-    //        {
-    //            continue;
-    //        }
+    //인접한 타일을 검사하여 g,h,f값 계산, 부모 지정, 열린노드지정 처리
+    void SearchNeighborTile(Tile stdTile)
+    {
+        int minCol = Mathf.Clamp(stdTile.col - 1, 0, TILE_COL - 1);
+        int maxCol = Mathf.Clamp(stdTile.col + 1, 0, TILE_COL - 1);
+        int minRow = Mathf.Clamp(stdTile.row - 1, 0, TILE_ROW - 1);
+        int maxRow = Mathf.Clamp(stdTile.row + 1, 0, TILE_ROW - 1);
 
-    //        int tempGCost = stdTile.gCost;
-    //        tempGCost += (stdCol - col != 0 && stdRow - row != 0) ? DIAGONAL_G_COST : NON_DIAGONAL_G_COST;
+        //인접한 타일들을 검사한다.
+        for (int col = minCol; col <= maxCol; ++col)
+        {
+            for (int row = minRow; row <= maxRow; ++row)
+            {
+                //인접한 타일을 현재 타일로 설정
+                Tile curTile = tiles[col, row];
 
-    //        switch (curTile.state)
-    //        {
-    //            case TileState.BEFORE_INQUIRY:
-    //                openTileList.Add(curTile);
-    //                curTile.parent = stdTile;
-    //                curTile.gCost = tempGCost;
-    //                break;
+                //만약 현재 타일이 기준 타일과 같거나 이동 불가 타일이라면
+                if ((col == stdTile.col && row == stdTile.row) || curTile.IsNonWalkable())
+                {
+                    //현재 타일 검사를 생략한다.
+                    continue;
+                }
 
-    //            case TileState.OPENED:
-    //                if(tempGCost < curTile.gCost)
-    //                {
-    //                    curTile.gCost = tempGCost;
-    //                    curTile.parent = stdTile;
-    //                }
-    //                break;
-    //        }
+                //임시로 기준 타일을 통해 이동했을 때의 g값을 계산한다.
+                int tempGCost = stdTile.gCost;
+                tempGCost += (stdTile.col - col != 0 && stdTile.row - row != 0) ? DIAGONAL_G_COST : NON_DIAGONAL_G_COST;
 
-    //        if (curTile == targetTile)
-    //        {
-    //            for (Tile tile = targetTile; tile != null; tile = tile.parent)
-    //            {
-    //                //working...
-    //            }
-    //        }
-    //    }
-    //}
+                switch (curTile.state)
+                {
+                    //타일이 검사 전 상태라면 현재 타일을 오픈 리스트에 추가한 뒤, 현재 타일의 g값을 임시 g값으로 한다.
+                    case TileState.BEFORE_INQUIRY:
+                        openTileList.Add(curTile);
+                        curTile.state = TileState.OPENED;
+                        curTile.parent = stdTile;
+                        curTile.gCost = tempGCost;
+                        break;
+
+                    //이미 열린 타일이라면 임시 g값과 기준 노드의 g값을 비교하여 임시 g값이 더 작으면 
+                    //기준 노드를 통해 가는게 더 좋은 길이라는 의미이므로 현재 타일의 g값과 부모를 재설정한다.
+                    case TileState.OPENED:
+                        if (tempGCost < curTile.gCost)
+                        {
+                            curTile.gCost = tempGCost;
+                            curTile.parent = stdTile;
+                        }
+                        break;
+                }
+            }
+        }
+
+        openTileList.Sort();
+    }
 
     void MapInit()
     {
@@ -130,21 +168,21 @@ public class MapManager : MonoBehaviour
             int col = tileIdx % TILE_COL;
             int row = tileIdx / TILE_COL;
 
-            tiles[col, row].Reset();
+            tiles[col, row] = new Tile(col, row);
         }
 
         //벽에 포함되는 타일들을 벽으로 설정한다.
-        for (int wallIdx = 0; wallIdx < walls.Length; ++wallIdx)
+        for (int obsIdx = 0; obsIdx < obstacles.Length; ++obsIdx)
         {
-            Bounds bounds = walls[wallIdx].bounds;
-            int minX = Mathf.Clamp((int)bounds.min.x, 0, TILE_COL - 1);
-            int maxX = Mathf.Clamp((int)bounds.max.x, 0, TILE_COL - 1);
-            int minY = Mathf.Clamp((int)bounds.min.y, 0, TILE_ROW - 1);
-            int maxY = Mathf.Clamp((int)bounds.max.y, 0, TILE_ROW - 1);
+            Bounds bounds = obstacles[obsIdx].bounds;
+            int minCol = Mathf.Clamp((int)bounds.min.x / TILE_SIZE, 0, TILE_COL - 1);
+            int maxCol = Mathf.Clamp((int)bounds.max.x / TILE_SIZE, 0, TILE_COL - 1);
+            int minRow = Mathf.Clamp((int)bounds.min.y / TILE_SIZE, 0, TILE_ROW - 1);
+            int maxRow = Mathf.Clamp((int)bounds.max.y / TILE_SIZE, 0, TILE_ROW - 1);
 
-            for (int col = minX; col <= maxX; ++col)
+            for (int col = minCol; col <= maxCol; ++col)
             {
-                for (int row = minY; row <= maxY; ++row)
+                for (int row = minRow; row <= maxRow; ++row)
                 {
                     tiles[col, row].state = TileState.WALL;
                 }
@@ -172,8 +210,26 @@ public class MapManager : MonoBehaviour
         MapInit();
 	}
 	
-	void Update () 
+	void OnDrawGizmos () 
     {
-	
-	}
+        if (!showGrid)
+            return;
+
+        for (int tileIdx = 0; tileIdx < TILE_COL * TILE_ROW; ++tileIdx)
+        {
+            int col = tileIdx % TILE_COL;
+            int row = tileIdx / TILE_COL;
+
+            if (tiles[col, row] != null)
+            {
+                Vector3 pos = (Vector3.right * col + Vector3.up * row) * TILE_SIZE;
+
+                Gizmos.color = tiles[col, row].IsNonWalkable() ? Color.red : Color.white;
+
+                Vector3 halfSize = Vector3.one * ((float)TILE_SIZE * 0.5f);
+
+                Gizmos.DrawCube(pos + halfSize, halfSize);
+            }
+        }
+    }
 }
