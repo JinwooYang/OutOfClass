@@ -6,7 +6,7 @@ public class Monster : MonoBehaviour
     public Transform playerTransform;
     public float chaseSpeed;
 
-    Rigidbody2D rb;
+    //Rigidbody2D rb;
 
     PathFinder pathFinder;
 
@@ -16,7 +16,7 @@ public class Monster : MonoBehaviour
 	// Use this for initialization
 	void Start () 
     {
-        rb = GetComponent<Rigidbody2D>();
+        //rb = GetComponent<Rigidbody2D>();
         pathFinder = GetComponent<PathFinder>();
         enemyCollider = GetComponent<BoxCollider2D>();
         enemySight = GetComponent<CircleCollider2D>();
@@ -29,7 +29,7 @@ public class Monster : MonoBehaviour
     {
         while(true)
         {
-            pathFinder.SetDestination(playerTransform.position, chaseSpeed);
+            pathFinder.SetDestination(playerTransform.position, chaseSpeed, 90f);
             yield return new WaitForSeconds(10f);
         }
     }
@@ -49,11 +49,11 @@ public class Monster : MonoBehaviour
     //}
 
 
-    void OnTriggerExit2D(Collider2D other)
-    {
-        if(other.tag == "Player")
-        {
-            rb.velocity = Vector2.zero;
-        }
-    }
+    //void OnTriggerExit2D(Collider2D other)
+    //{
+    //    if(other.tag == "Player")
+    //    {
+    //        rb.velocity = Vector2.zero;
+    //    }
+    //}
 }

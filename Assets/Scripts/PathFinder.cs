@@ -12,13 +12,18 @@ public class PathFinder : MonoBehaviour
 
     float moveSpeed = 0f;
 
+    float orgDegAngle = 0f;
+
     bool startFollowPathCoroutine = false;
 
-    public void SetDestination(Vector2 targetPos, float speed)
+    public void SetDestination(Vector2 targetPos, float moveSpeed, float orgDegAngle)
     {
         movePosStack.Clear();
         mapManager.GetPath(movePosStack, cachedTransform.position, targetPos);
-        moveSpeed = speed;
+
+        this.moveSpeed = moveSpeed;
+        this.orgDegAngle = orgDegAngle;
+
         if (!startFollowPathCoroutine)
         {
             StartCoroutine(FollowPath());
@@ -30,15 +35,15 @@ public class PathFinder : MonoBehaviour
     {
         while (true)
         {
-            if (movePosStack.Count != 0)
+            if(movePosStack.Count > 0)
             {
                 Vector3 targetPos = movePosStack.Pop();
 
-                //while (movePosStack.Count != 0)
+                while (cachedTransform.position != targetPos)
                 {
-                    //cachedTransform.position = Vector2.MoveTowards(cachedTransform.position, targetPos, moveSpeed * Time.deltaTime);
-                    cachedTransform.position = targetPos;
-                    yield return new WaitForSeconds(0.1f);
+                    cachedTransform.position = Vector3.MoveTowards(cachedTransform.position, targetPos, moveSpeed * Time.deltaTime);
+                    yield return null;
+                    continue;
                 }
             }
             yield return null;

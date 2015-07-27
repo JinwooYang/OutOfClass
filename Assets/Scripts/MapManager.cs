@@ -55,7 +55,7 @@ public class MapManager : MonoBehaviour
 
     public BoxCollider2D[] obstacles;
 
-    const int TILE_SIZE = 61;
+    const int TILE_SIZE = 21;
     const int MAP_IMAGE_SIZE = 2562;
 
     const int TILE_COL = MAP_IMAGE_SIZE / TILE_SIZE, TILE_ROW = MAP_IMAGE_SIZE / TILE_SIZE;
@@ -175,7 +175,7 @@ public class MapManager : MonoBehaviour
                     //이미 열린 타일이라면 임시 g값과 기준 노드의 g값을 비교하여 임시 g값이 더 작으면 
                     //기준 노드를 통해 가는게 더 좋은 길이라는 의미이므로 현재 타일의 g값과 부모를 재설정한다.
                     case TileState.OPENED:
-                        if (tempGCost < curTile.gCost)
+                        if (/*curTile.parent != stdTile ||*/ tempGCost < curTile.gCost)
                         {
                             curTile.gCost = tempGCost;
                             curTile.parent = stdTile;
@@ -255,7 +255,9 @@ public class MapManager : MonoBehaviour
             {
                 Vector3 pos = (Vector3.right * col + Vector3.up * row) * TILE_SIZE;
 
-                Gizmos.color = tiles[col, row].IsNonWalkable() ? Color.red : Color.white;
+                Gizmos.color = tiles[col, row].IsNonWalkable() ? Color.red : 
+                    tiles[col, row].state == TileState.OPENED ? Color.green :
+                                                                Color.white;
 
                 Vector3 halfSize = Vector3.one * ((float)TILE_SIZE * 0.5f);
 
