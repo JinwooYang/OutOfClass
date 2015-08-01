@@ -12,6 +12,7 @@ public class Monster : MonoBehaviour
 
     BoxCollider2D enemyCollider;
     CircleCollider2D enemySight;
+    SpriteRenderer sprRenderer;
 
 	// Use this for initialization
 	void Start () 
@@ -20,6 +21,7 @@ public class Monster : MonoBehaviour
         pathFinder = GetComponent<PathFinder>();
         enemyCollider = GetComponent<BoxCollider2D>();
         enemySight = GetComponent<CircleCollider2D>();
+        sprRenderer = GetComponent<SpriteRenderer>();
 
         StartCoroutine(GoToPlayer());
 	}
