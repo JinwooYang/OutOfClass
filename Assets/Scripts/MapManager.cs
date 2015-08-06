@@ -26,6 +26,7 @@ class Tile : IComparable<Tile>
         this.col = col;
         this.row = row;
 
+        parent = null;
         gCost = hCost = 0;
         state = TileState.BEFORE_INQUIRY;
     }
@@ -51,10 +52,17 @@ class Tile : IComparable<Tile>
 
 public class MapManager : MonoBehaviour 
 {
+    public int test
+    {
+        get;
+        private set;
+    }
+
+    public GameObject obstaclesParent;
     public bool showGrid = true;
 
-    public BoxCollider2D[] obstacles;
-
+    Transform cachedTransform;
+    List<BoxCollider2D> obstacleColliders = new List<BoxCollider2D>();
     const int TILE_SIZE = 21;
     const int MAP_IMAGE_SIZE = 2562;
 
@@ -68,6 +76,7 @@ public class MapManager : MonoBehaviour
 
     public void SetTileState(int col, int row, TileState state)
     {
+        test = 10;
         tiles[col, row].state = state;
     }
 
@@ -75,6 +84,11 @@ public class MapManager : MonoBehaviour
     public void GetPath(Stack<Vector2> outStack, Vector2 startPos, Vector2 targetPos)
     {
         MapReset();
+
+        startPos.x -= cachedTransform.position.x;
+        startPos.y -= cachedTransform.position.y;
+        targetPos.x -= cachedTransform.position.x;
+        targetPos.y -= cachedTransform.position.y;
 
         int startCol = Mathf.Clamp((int)startPos.x / TILE_SIZE, 0, TILE_COL - 1);
         int startRow = Mathf.Clamp((int)startPos.y / TILE_SIZE, 0, TILE_ROW - 1);
@@ -96,6 +110,8 @@ public class MapManager : MonoBehaviour
                 for (Tile tile = curTile; tile != null; tile = tile.parent)
                 {
                     Vector2 pos = (Vector2.right * tile.col + Vector2.up * tile.row) * TILE_SIZE;
+                    pos.x += cachedTransform.position.x;
+                    pos.y += cachedTransform.position.y;
                     outStack.Push(pos);
                 }
                 return;
@@ -199,14 +215,31 @@ public class MapManager : MonoBehaviour
             tiles[col, row] = new Tile(col, row);
         }
 
-        //벽에 포함되는 타일들을 벽으로 설정한다.
-        for (int obsIdx = 0; obsIdx < obstacles.Length; ++obsIdx)
+        //벽을 불러온다.
+        Transform obsParentTransform = obstaclesParent.transform;
+        int childCnt = obsParentTransform.childCount;
+
+        for (int childIdx = 0; childIdx < childCnt; ++childIdx)
         {
-            Bounds bounds = obstacles[obsIdx].bounds;
-            int minCol = Mathf.Clamp((int)bounds.min.x / TILE_SIZE, 0, TILE_COL - 1);
-            int maxCol = Mathf.Clamp((int)bounds.max.x / TILE_SIZE, 0, TILE_COL - 1);
-            int minRow = Mathf.Clamp((int)bounds.min.y / TILE_SIZE, 0, TILE_ROW - 1);
-            int maxRow = Mathf.Clamp((int)bounds.max.y / TILE_SIZE, 0, TILE_ROW - 1);
+            obstacleColliders.Add(obsParentTransform.GetChild(childIdx).gameObject.GetComponent<BoxCollider2D>());
+        }
+
+        //벽에 포함되는 타일들을 벽으로 설정한다.
+        for (int obsIdx = 0; obsIdx < obstacleColliders.Count; ++obsIdx)
+        {
+            Bounds bounds = obstacleColliders[obsIdx].bounds;
+            Vector3 min = bounds.min;
+            Vector3 max = bounds.max;
+
+            min.x -= cachedTransform.position.x;
+            min.y -= cachedTransform.position.y;
+            max.x -= cachedTransform.position.x;
+            max.y -= cachedTransform.position.y;
+
+            int minCol = Mathf.Clamp((int)min.x / TILE_SIZE, 0, TILE_COL - 1);
+            int maxCol = Mathf.Clamp((int)max.x / TILE_SIZE, 0, TILE_COL - 1);
+            int minRow = Mathf.Clamp((int)min.y / TILE_SIZE, 0, TILE_ROW - 1);
+            int maxRow = Mathf.Clamp((int)max.y / TILE_SIZE, 0, TILE_ROW - 1);
 
             for (int col = minCol; col <= maxCol; ++col)
             {
@@ -238,6 +271,7 @@ public class MapManager : MonoBehaviour
 
 	void Awake () 
     {
+        cachedTransform = base.transform;
         MapInit();
 	}
 	
@@ -261,7 +295,7 @@ public class MapManager : MonoBehaviour
 
                 Vector3 halfSize = Vector3.one * ((float)TILE_SIZE * 0.5f);
 
-                Gizmos.DrawCube(pos + halfSize, halfSize);
+                Gizmos.DrawCube(cachedTransform.position + pos + halfSize, halfSize);
             }
         }
     }

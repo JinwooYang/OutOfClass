@@ -40,7 +40,7 @@ public class PathFinder : MonoBehaviour
                 Vector3 targetPos = movePosStack.Pop();
                 Vector3 moveDist = targetPos - cachedTransform.position;
                 float radAngle = Mathf.Atan2(moveDist.y, moveDist.x);
-                cachedTransform.rotation = Quaternion.Euler(0f, 0f, radAngle * Mathf.Rad2Deg + 90f);
+                cachedTransform.rotation = Quaternion.Euler(0f, 0f, radAngle * Mathf.Rad2Deg + orgDegAngle);
 
 
                 while (cachedTransform.position != targetPos)
