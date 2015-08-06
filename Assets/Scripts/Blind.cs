@@ -3,8 +3,6 @@ using System.Collections;
 
 public class Blind : MonoBehaviour 
 {
-    public Transform playerTransform;
-
     SpriteRenderer sprRenderer;
     BoxCollider2D boxCollider;
 

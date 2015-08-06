@@ -8,14 +8,14 @@ public class Player : MonoBehaviour
     Animator animator;
     Rigidbody2D rb;
 
-    GameObject idleImg;
+    //GameObject idleImg;
     AudioSource walkSound, runSound;
 
     enum PlayerStatus {IDLE, WALK, RUN};
     PlayerStatus status;
 
 	// Use this for initialization
-	void Start () 
+	void Awake () 
     {
         status = PlayerStatus.IDLE;
 

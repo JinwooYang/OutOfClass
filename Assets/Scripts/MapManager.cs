@@ -52,12 +52,6 @@ class Tile : IComparable<Tile>
 
 public class MapManager : MonoBehaviour 
 {
-    public int test
-    {
-        get;
-        private set;
-    }
-
     public GameObject obstaclesParent;
     public bool showGrid = true;
 
@@ -76,7 +70,6 @@ public class MapManager : MonoBehaviour
 
     public void SetTileState(int col, int row, TileState state)
     {
-        test = 10;
         tiles[col, row].state = state;
     }
 

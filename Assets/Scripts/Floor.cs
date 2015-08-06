@@ -3,11 +3,18 @@ using System.Collections;
 
 public class Floor : MonoBehaviour 
 {
-    public static GameObject curFloor
+    public static GameObject playerFloor
     {
         get;
         private set;
     }
+
+    public static GameObject monsterFloor
+    {
+        get;
+        private set;
+    }
+
 
     public MapManager mapManager
     {
@@ -27,7 +34,13 @@ public class Floor : MonoBehaviour
     {
         if(other.CompareTag("Player"))
         {
-            curFloor = this.gameObject;
+            playerFloor = this.gameObject;
+            print("player floor is " + this.gameObject.name);
+        }
+        else if(other.CompareTag("Monster"))
+        {
+            monsterFloor = this.gameObject;
+            print("monster floor is " + this.gameObject.name);
         }
     }
 }
