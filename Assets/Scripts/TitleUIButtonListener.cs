@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class TitleUIButtonListener : MonoBehaviour 
+public class TitleUIButtonListener : MonoBehaviour
 {
     Animator anim;
     bool showHowToImage = false;
@@ -13,9 +13,9 @@ public class TitleUIButtonListener : MonoBehaviour
 
     void Update()
     {
-        if(Input.GetKeyDown(KeyCode.Escape))
+        if (Input.GetKeyDown(KeyCode.Escape))
         {
-            if(showHowToImage)
+            if (showHowToImage)
             {
                 anim.Play("HideHowToPlayImage");
             }

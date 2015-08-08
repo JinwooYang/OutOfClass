@@ -3,13 +3,17 @@ using System.Collections;
 
 public class Floor : MonoBehaviour 
 {
-    public static GameObject playerFloor
+    public FloorImageAnimator floorImageAnimator;
+
+    public int floorNum;
+
+    public static Floor playerFloor
     {
         get;
         private set;
     }
 
-    public static GameObject monsterFloor
+    public static Floor monsterFloor
     {
         get;
         private set;
@@ -34,13 +38,14 @@ public class Floor : MonoBehaviour
     {
         if(other.CompareTag("Player"))
         {
-            playerFloor = this.gameObject;
-            print("player floor is " + this.gameObject.name);
+            playerFloor = this;
+            floorImageAnimator.ShowFloorImage(floorNum);
+            print("player floor is " + floorNum);
         }
         else if(other.CompareTag("Monster"))
         {
-            monsterFloor = this.gameObject;
-            print("monster floor is " + this.gameObject.name);
+            monsterFloor = this;
+            print("monster floor is " + floorNum);
         }
     }
 }
