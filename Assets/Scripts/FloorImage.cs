@@ -6,31 +6,16 @@ public class FloorImage : MonoBehaviour
 {
     public Image fadeImage;
 
-    Animator fadeImageAnim;
+    //Animator fadeImageAnim;
 
-    void Awake()
-    {
-        fadeImageAnim = fadeImage.gameObject.GetComponent<Animator>();
-    }
+    //void Awake()
+    //{
+    //    fadeImageAnim = fadeImage.gameObject.GetComponent<Animator>();
+    //}
 
-    void TimePause()
-    {
-        //Time.timeScale = 0f;
-    }
-
-    void TimeResume()
-    {
-        //Time.timeScale = 1f;
-    }
-
-    void ScreenFadeIn()
-    {
-        fadeImageAnim.Play("ScreenFadeIn");
-    }
-
-    void ScreenFadeOut()
-    {
-        fadeImageAnim.Play("ScreenFadeOut");
-    }
-
+    //void ScreenFadeIn()
+    //{
+    //    Time.timeScale = 1f;
+    //    fadeImageAnim.Play("ScreenFadeIn");
+    //}
 }
