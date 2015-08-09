@@ -3,18 +3,25 @@ using System.Collections;
 
 public class Stair : MonoBehaviour
 {
+    public Transform playerTransform;
+    public FloorChanger floorChanger;
     public Stair exitStair;
 
-    const float gap = 200f;
+    const int gap = 200;
+
+    public void GoToExitStair()
+    {
+        Vector2 tempPos = exitStair.transform.position;
+        tempPos.x += gap;
+        playerTransform.position = tempPos;
+        playerTransform.rotation = Quaternion.identity;
+    }
 
     void OnTriggerEnter2D(Collider2D other)
     {
         if (other.CompareTag("Player"))
         {
-            Vector2 tempPos = exitStair.transform.position;
-            tempPos.x += gap;
-            other.transform.position = tempPos;
-            other.transform.rotation = Quaternion.identity;
+            floorChanger.ChangeFloor(this);
         }
     }
 }
