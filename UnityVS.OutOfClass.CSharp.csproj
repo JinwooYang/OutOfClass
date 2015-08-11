@@ -70,9 +70,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Scripts\AutoDestroyParticle.cs" />
     <Compile Include="Assets\Scripts\Blind.cs" />
-    <Compile Include="Assets\Scripts\EnemyManager.cs" />
     <Compile Include="Assets\Scripts\FadeImage.cs" />
     <Compile Include="Assets\Scripts\Floor.cs" />
     <Compile Include="Assets\Scripts\FloorChanger.cs" />
@@ -82,13 +80,8 @@
     <Compile Include="Assets\Scripts\Monster.cs" />
     <Compile Include="Assets\Scripts\PathFinder.cs" />
     <Compile Include="Assets\Scripts\Player.cs" />
-    <Compile Include="Assets\Scripts\Skeleton.cs" />
-    <Compile Include="Assets\Scripts\SmoothFollowCamera.cs" />
-    <Compile Include="Assets\Scripts\SmoothFollowCamera_TR.cs" />
-    <Compile Include="Assets\Scripts\Spawner.cs" />
     <Compile Include="Assets\Scripts\Stair.cs" />
     <Compile Include="Assets\Scripts\TitleUIButtonListener.cs" />
-    <Compile Include="Assets\Scripts\Warrior.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2015\UnityVS.CSharp.targets" />
 </Project>

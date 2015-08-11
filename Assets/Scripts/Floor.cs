@@ -27,11 +27,19 @@ public class Floor : MonoBehaviour
     }
 
     Transform cachedTransform;
+    Transform monsterWay;
+
+
+    public Transform GetRandomMonsterMovePos()
+    {
+        return monsterWay.GetChild(Random.Range(0, monsterWay.childCount));
+    }
 
     void Awake()
     {
         cachedTransform = base.transform;
         mapManager = cachedTransform.FindChild("MapManager").gameObject.GetComponent<MapManager>();
+        monsterWay = cachedTransform.FindChild("MonsterWay");
     }
 
     void OnTriggerEnter2D(Collider2D other)

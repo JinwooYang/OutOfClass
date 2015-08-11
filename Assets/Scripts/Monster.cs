@@ -4,9 +4,11 @@ using System.Collections;
 public class Monster : MonoBehaviour
 {
     public Transform playerTransform;
+    public float walkSpeed;
     public float chaseSpeed;
 
     //Rigidbody2D rb;
+    Transform cachedTransform;
 
     PathFinder pathFinder;
 
@@ -18,26 +20,42 @@ public class Monster : MonoBehaviour
     void Start()
     {
         //rb = GetComponent<Rigidbody2D>();
+        cachedTransform = base.transform;
         pathFinder = GetComponent<PathFinder>();
         enemyCollider = GetComponent<BoxCollider2D>();
         enemySight = GetComponent<CircleCollider2D>();
-        sprRenderer = GetComponent<SpriteRenderer>();
 
-        StartCoroutine(GoToPlayer());
+        StartCoroutine(Patrol());
     }
 
 
-    IEnumerator GoToPlayer()
+    IEnumerator Patrol()
     {
+        Transform movePos = null;
+
         while (true)
         {
-            if (Floor.monsterFloor == Floor.playerFloor)
+            if (movePos == null)
             {
-                pathFinder.SetDestination(playerTransform.position, chaseSpeed, 90f);
-                yield return new WaitForSeconds(10f);
+                if (Floor.monsterFloor != null && Floor.monsterFloor == Floor.playerFloor)
+                {
+                    movePos = Floor.monsterFloor.GetRandomMonsterMovePos();
+                    while (movePos.position == cachedTransform.position)
+                    {
+                        movePos = Floor.monsterFloor.GetRandomMonsterMovePos();
+                    }
+                    pathFinder.SetDestination(movePos.position, walkSpeed, 90f);
+                }
+            }
+            else if (movePos.position == cachedTransform.position)
+            {
+                yield return new WaitForSeconds(4f);
+                break;
             }
             yield return null;
         }
+
+        StartCoroutine(Patrol());
     }
 
     //void OnTriggerStay2D(Collider2D other)

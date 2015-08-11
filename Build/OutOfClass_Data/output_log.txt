@@ -16,7 +16,7 @@ Platform assembly: E:\Users\Jinwoo\Documents\OutOfClass\Build\OutOfClass_Data\Ma
 Loading E:\Users\Jinwoo\Documents\OutOfClass\Build\OutOfClass_Data\Managed\UnityEngine.Networking.dll into Unity Child Domain
 Platform assembly: E:\Users\Jinwoo\Documents\OutOfClass\Build\OutOfClass_Data\Managed\UnityEngine.Analytics.dll (this message is harmless)
 Loading E:\Users\Jinwoo\Documents\OutOfClass\Build\OutOfClass_Data\Managed\UnityEngine.Analytics.dll into Unity Child Domain
-- Completed reload, in  0.038 seconds
+- Completed reload, in  0.037 seconds
 desktop: 1920x1080 60Hz; virtual: 1920x1080 at 0,0
 <RI> Initializing input.
 <RI> Input initialized.
@@ -24,28 +24,16 @@ desktop: 1920x1080 60Hz; virtual: 1920x1080 at 0,0
 Platform assembly: E:\Users\Jinwoo\Documents\OutOfClass\Build\OutOfClass_Data\Managed\System.Core.dll (this message is harmless)
 Platform assembly: E:\Users\Jinwoo\Documents\OutOfClass\Build\OutOfClass_Data\Managed\System.dll (this message is harmless)
 Unloading 3 Unused Serialized files (Serialized files now loaded: 0)
-UnloadTime: 3.064401 ms
+UnloadTime: 3.126152 ms
 
 Unloading 16 unused Assets to reduce memory usage. Loaded Objects now: 1267.
-Total: 6.957605 ms (FindLiveObjects: 0.044776 ms CreateObjectMapping: 0.020778 ms MarkObjects: 6.846981 ms  DeleteObjects: 0.044191 ms)
+Total: 7.026380 ms (FindLiveObjects: 0.053848 ms CreateObjectMapping: 0.023119 ms MarkObjects: 6.893806 ms  DeleteObjects: 0.055019 ms)
 
 monster floor is 4
  
 (Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 65)
 
 player floor is 4
- 
-(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 65)
-
-player floor is 3
- 
-(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 65)
-
-player floor is 4
- 
-(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 65)
-
-player floor is 3
  
 (Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/UnityEngineDebugBindings.gen.cpp Line: 65)
 

@@ -33,6 +33,7 @@ public class PathFinder : MonoBehaviour
 
     IEnumerator FollowPath()
     {
+        //TODO : 이동처리에 문제가 있다. 목표점까지 끝까지 도달하지 못함.
         while (true)
         {
             if (movePosStack.Count > 0)
