@@ -6,6 +6,7 @@ public class Monster : MonoBehaviour
     public Transform playerTransform;
     public float walkSpeed;
     public float chaseSpeed;
+    public float patrolWaitSeconds;
 
     //Rigidbody2D rb;
     Transform cachedTransform;
@@ -16,6 +17,8 @@ public class Monster : MonoBehaviour
     CircleCollider2D enemySight;
     SpriteRenderer sprRenderer;
 
+    WaitForSeconds waitForPatrolWaitSeconds;
+
     // Use this for initialization
     void Start()
     {
@@ -24,6 +27,7 @@ public class Monster : MonoBehaviour
         pathFinder = GetComponent<PathFinder>();
         enemyCollider = GetComponent<BoxCollider2D>();
         enemySight = GetComponent<CircleCollider2D>();
+        waitForPatrolWaitSeconds = new WaitForSeconds(patrolWaitSeconds);
 
         StartCoroutine(Patrol());
     }
@@ -32,24 +36,30 @@ public class Monster : MonoBehaviour
     IEnumerator Patrol()
     {
         Transform movePos = null;
+        bool moveDone = false;
 
         while (true)
         {
             if (movePos == null)
             {
-                if (Floor.monsterFloor != null && Floor.monsterFloor == Floor.playerFloor)
+                if (Floor.monsterFloor != null)
                 {
                     movePos = Floor.monsterFloor.GetRandomMonsterMovePos();
                     while (movePos.position == cachedTransform.position)
                     {
                         movePos = Floor.monsterFloor.GetRandomMonsterMovePos();
                     }
-                    pathFinder.SetDestination(movePos.position, walkSpeed, 90f);
+
+                    pathFinder.SetMapManager(Floor.monsterFloor.mapManager);
+                    pathFinder.SetDestination(movePos.position, walkSpeed, 90f, delegate()
+                    {
+                        moveDone = true;
+                    });
                 }
             }
-            else if (movePos.position == cachedTransform.position)
+            else if (moveDone)
             {
-                yield return new WaitForSeconds(4f);
+                yield return waitForPatrolWaitSeconds;
                 break;
             }
             yield return null;

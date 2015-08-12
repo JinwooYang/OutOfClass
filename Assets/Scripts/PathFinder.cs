@@ -2,6 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 
+public delegate void MoveDoneCallback();
+
+
 public class PathFinder : MonoBehaviour 
 {
     public MapManager mapManager;
@@ -16,13 +19,21 @@ public class PathFinder : MonoBehaviour
 
     bool startFollowPathCoroutine = false;
 
-    public void SetDestination(Vector2 targetPos, float moveSpeed, float orgDegAngle)
+    MoveDoneCallback moveDoneCallback;
+
+    public void SetMapManager(MapManager mapManager)
+    {
+        this.mapManager = mapManager;
+    }
+
+    public void SetDestination(Vector2 targetPos, float moveSpeed, float orgDegAngle, MoveDoneCallback callback = null)
     {
         movePosStack.Clear();
         mapManager.GetPath(movePosStack, cachedTransform.position, targetPos);
 
         this.moveSpeed = moveSpeed;
         this.orgDegAngle = orgDegAngle;
+        this.moveDoneCallback = callback;
 
         if (!startFollowPathCoroutine)
         {
@@ -33,26 +44,40 @@ public class PathFinder : MonoBehaviour
 
     IEnumerator FollowPath()
     {
-        //TODO : 이동처리에 문제가 있다. 목표점까지 끝까지 도달하지 못함.
         while (true)
         {
-            if (movePosStack.Count > 0)
+            float remainDist = moveSpeed * Time.deltaTime;
+
+            while (movePosStack.Count > 0)
             {
-                Vector3 targetPos = movePosStack.Pop();
-                Vector3 moveDist = targetPos - cachedTransform.position;
-                float radAngle = Mathf.Atan2(moveDist.y, moveDist.x);
+                Vector3 targetPos = movePosStack.Peek();
+                Vector3 dist = targetPos - cachedTransform.position;
+                float radAngle = Mathf.Atan2(dist.y, dist.x);
+
                 cachedTransform.rotation = Quaternion.Euler(0f, 0f, radAngle * Mathf.Rad2Deg + orgDegAngle);
 
-
-                while (cachedTransform.position != targetPos)
+                if (dist.sqrMagnitude < (remainDist * remainDist))
                 {
-                    cachedTransform.position = Vector3.MoveTowards(cachedTransform.position, targetPos, moveSpeed * Time.deltaTime);
-                    yield return null;
+                    remainDist -= dist.magnitude;
+                    cachedTransform.position = targetPos;
+                    movePosStack.Pop();
+
+                    if (movePosStack.Count == 0)
+                    {
+                        if (moveDoneCallback != null) { moveDoneCallback(); }
+                    }
+                }
+                else
+                {
+                    cachedTransform.position += (dist.normalized * remainDist);
+                    break;
                 }
             }
+
             yield return null;
         }
     }
+
     void Awake()
     {
         cachedTransform = base.transform;
