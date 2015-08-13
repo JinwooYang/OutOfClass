@@ -30,7 +30,7 @@ public class Floor : MonoBehaviour
     Transform monsterWay;
 
 
-    public Transform GetRandomMonsterMovePos()
+    public Transform GetRandomMonsterMoveTransform()
     {
         return monsterWay.GetChild(Random.Range(0, monsterWay.childCount));
     }
@@ -48,12 +48,12 @@ public class Floor : MonoBehaviour
         {
             playerFloor = this;
             floorImageAnimator.ShowFloorImage(floorNum);
-            print("player floor is " + floorNum);
+            //print("player floor is " + floorNum);
         }
         else if(other.CompareTag("Monster"))
         {
             monsterFloor = this;
-            print("monster floor is " + floorNum);
+            //print("monster floor is " + floorNum);
         }
     }
 }

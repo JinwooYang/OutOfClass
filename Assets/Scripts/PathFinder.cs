@@ -9,6 +9,12 @@ public class PathFinder : MonoBehaviour
 {
     public MapManager mapManager;
 
+    public bool isMoving
+    {
+        get;
+        private set;
+    }
+
     Transform cachedTransform;
     
     Stack<Vector2> movePosStack = new Stack<Vector2>();
@@ -28,6 +34,8 @@ public class PathFinder : MonoBehaviour
 
     public void SetDestination(Vector2 targetPos, float moveSpeed, float orgDegAngle, MoveDoneCallback callback = null)
     {
+        isMoving = true;
+
         movePosStack.Clear();
         mapManager.GetPath(movePosStack, cachedTransform.position, targetPos);
 
@@ -64,6 +72,7 @@ public class PathFinder : MonoBehaviour
 
                     if (movePosStack.Count == 0)
                     {
+                        isMoving = false;
                         if (moveDoneCallback != null) { moveDoneCallback(); }
                     }
                 }
@@ -81,5 +90,6 @@ public class PathFinder : MonoBehaviour
     void Awake()
     {
         cachedTransform = base.transform;
+        isMoving = false;
     }
 }

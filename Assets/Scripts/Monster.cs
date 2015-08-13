@@ -9,6 +9,11 @@ public class Monster : MonoBehaviour
     public float patrolWaitSeconds;
 
     //Rigidbody2D rb;
+    enum MonsterState {NONE, IDLE, PATROL, CHASE};
+    MonsterState state = MonsterState.IDLE;
+
+    float idleTimer = 0f;
+
     Transform cachedTransform;
 
     PathFinder pathFinder;
@@ -16,8 +21,6 @@ public class Monster : MonoBehaviour
     BoxCollider2D enemyCollider;
     CircleCollider2D enemySight;
     SpriteRenderer sprRenderer;
-
-    WaitForSeconds waitForPatrolWaitSeconds;
 
     // Use this for initialization
     void Start()
@@ -27,45 +30,78 @@ public class Monster : MonoBehaviour
         pathFinder = GetComponent<PathFinder>();
         enemyCollider = GetComponent<BoxCollider2D>();
         enemySight = GetComponent<CircleCollider2D>();
-        waitForPatrolWaitSeconds = new WaitForSeconds(patrolWaitSeconds);
-
-        StartCoroutine(Patrol());
+       // StartCoroutine(StateControl());
     }
 
-
-    IEnumerator Patrol()
+    void Idle()
     {
-        Transform movePos = null;
-        bool moveDone = false;
+        idleTimer += Time.deltaTime;
 
-        while (true)
+        if (idleTimer > patrolWaitSeconds)
         {
-            if (movePos == null)
-            {
-                if (Floor.monsterFloor != null)
-                {
-                    movePos = Floor.monsterFloor.GetRandomMonsterMovePos();
-                    while (movePos.position == cachedTransform.position)
-                    {
-                        movePos = Floor.monsterFloor.GetRandomMonsterMovePos();
-                    }
-
-                    pathFinder.SetMapManager(Floor.monsterFloor.mapManager);
-                    pathFinder.SetDestination(movePos.position, walkSpeed, 90f, delegate()
-                    {
-                        moveDone = true;
-                    });
-                }
-            }
-            else if (moveDone)
-            {
-                yield return waitForPatrolWaitSeconds;
-                break;
-            }
-            yield return null;
+            idleTimer = 0f;
+            state = MonsterState.PATROL;
         }
+    }
 
-        StartCoroutine(Patrol());
+    void Patrol()
+    {
+        if (Floor.monsterFloor != null && !pathFinder.isMoving)
+        {
+            if(Floor.monsterFloor != Floor.playerFloor)
+            {
+                Invoke("MoveToPlayerFloor", Random.Range(5f, 30f));
+                state = MonsterState.NONE;
+                return;
+            }
+
+            Transform movePos = Floor.monsterFloor.GetRandomMonsterMoveTransform();
+            while (movePos.position == cachedTransform.position)
+            {
+                movePos = Floor.monsterFloor.GetRandomMonsterMoveTransform();
+            }
+
+            pathFinder.SetMapManager(Floor.monsterFloor.mapManager);
+            pathFinder.SetDestination(movePos.position, walkSpeed, 90f, delegate()
+            {
+                state = MonsterState.IDLE;
+            });
+        }
+        //StartCoroutine(Patrol());
+    }
+
+    void Chase()
+    {
+    }
+
+    void MoveToPlayerFloor()
+    {
+        cachedTransform.position = Floor.playerFloor.GetRandomMonsterMoveTransform().position;
+        state = MonsterState.IDLE;
+    }
+
+    void Update()
+    {
+        switch (state)
+        {
+            case MonsterState.NONE:
+                break;
+
+            case MonsterState.IDLE:
+                Idle();
+                break;
+
+            case MonsterState.PATROL:
+                Patrol();
+                break;
+
+            case MonsterState.CHASE:
+                Chase();
+                break;
+
+            default:
+                break;
+        }
     }
 
     //void OnTriggerStay2D(Collider2D other)
