@@ -27,13 +27,9 @@ public class PathFinder : MonoBehaviour
 
     MoveDoneCallback moveDoneCallback;
 
-    public void SetMapManager(MapManager mapManager)
+    public void SetDestination(MapManager mapManager, Vector2 targetPos, float moveSpeed, float orgDegAngle, MoveDoneCallback callback = null)
     {
         this.mapManager = mapManager;
-    }
-
-    public void SetDestination(Vector2 targetPos, float moveSpeed, float orgDegAngle, MoveDoneCallback callback = null)
-    {
         isMoving = true;
 
         movePosStack.Clear();
@@ -51,41 +47,82 @@ public class PathFinder : MonoBehaviour
     }
 
     IEnumerator FollowPath()
-    {
-        while (true)
-        {
-            float remainDist = moveSpeed * Time.deltaTime;
+	{
+		while (true)
+		{
+			if(movePosStack.Count > 0)
+			{
+				Vector3 targetPos = movePosStack.Peek();
 
-            while (movePosStack.Count > 0)
-            {
-                Vector3 targetPos = movePosStack.Peek();
-                Vector3 dist = targetPos - cachedTransform.position;
-                float radAngle = Mathf.Atan2(dist.y, dist.x);
+                while (cachedTransform.position != targetPos)
+				{
+                    Vector3 dist = targetPos - cachedTransform.position;
+                    float radAngle = Mathf.Atan2(dist.y, dist.x);
 
-                cachedTransform.rotation = Quaternion.Euler(0f, 0f, radAngle * Mathf.Rad2Deg + orgDegAngle);
+                    cachedTransform.rotation = Quaternion.Euler(0f, 0f, radAngle * Mathf.Rad2Deg + orgDegAngle);
 
-                if (dist.sqrMagnitude < (remainDist * remainDist))
+                    cachedTransform.position = Vector3.MoveTowards(cachedTransform.position, targetPos, moveSpeed * Time.deltaTime);
+					yield return null;
+				}
+
+                if (movePosStack.Count > 0)
                 {
-                    remainDist -= dist.magnitude;
-                    cachedTransform.position = targetPos;
                     movePosStack.Pop();
 
                     if (movePosStack.Count == 0)
                     {
                         isMoving = false;
-                        if (moveDoneCallback != null) { moveDoneCallback(); }
+                        if (moveDoneCallback != null) moveDoneCallback();
                     }
                 }
-                else
-                {
-                    cachedTransform.position += (dist.normalized * remainDist);
-                    break;
-                }
-            }
-
-            yield return null;
-        }
-    }
+			}
+			yield return null;
+		}
+	}
+//    IEnumerator FollowPath()
+//    {
+//        while (true)
+//        {
+//            float remainDist = moveSpeed * Time.deltaTime;
+//
+//            while (movePosStack.Count > 0)
+//            {
+//                Vector3 targetPos = movePosStack.Peek();
+//
+//                if (mapManager.InTheSameTile(cachedTransform.position, targetPos))
+//                {
+//                    print("in the same tile");
+//                    movePosStack.Pop();
+//                    continue;
+//                }
+//
+//                Vector3 dist = targetPos - cachedTransform.position;
+//                float radAngle = Mathf.Atan2(dist.y, dist.x);
+//
+//                cachedTransform.rotation = Quaternion.Euler(0f, 0f, radAngle * Mathf.Rad2Deg + orgDegAngle);
+//
+//                if (dist.sqrMagnitude < (remainDist * remainDist))
+//                {
+//                    remainDist -= dist.magnitude;
+//                    cachedTransform.position = targetPos;
+//                    movePosStack.Pop();
+//
+//                    if (movePosStack.Count == 0)
+//                    {
+//                        isMoving = false;
+//                        if (moveDoneCallback != null) { moveDoneCallback(); }
+//                    }
+//                }
+//                else
+//                {
+//                    cachedTransform.position += (dist.normalized * remainDist);
+//                    break;
+//                }
+//            }
+//
+//            yield return null;
+//        }
+//    }
 
     void Awake()
     {

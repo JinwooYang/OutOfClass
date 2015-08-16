@@ -4,7 +4,6 @@ using System.Collections;
 public class Blind : MonoBehaviour 
 {
     SpriteRenderer sprRenderer;
-    BoxCollider2D boxCollider;
 
     bool playerInCollider = false;
 
@@ -31,7 +30,6 @@ public class Blind : MonoBehaviour
 	void Awake () 
     {
         sprRenderer = GetComponent<SpriteRenderer>();
-        boxCollider = GetComponent<BoxCollider2D>();
 	}
 	
     void Update()

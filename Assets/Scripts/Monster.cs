@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+
 public class Monster : MonoBehaviour
 {
     public Transform playerTransform;
@@ -9,7 +10,7 @@ public class Monster : MonoBehaviour
     public float patrolWaitSeconds;
 
     //Rigidbody2D rb;
-    enum MonsterState {NONE, IDLE, PATROL, CHASE};
+    enum MonsterState { NONE, IDLE, PATROL, CHASE };
     MonsterState state = MonsterState.IDLE;
 
     float idleTimer = 0f;
@@ -18,9 +19,20 @@ public class Monster : MonoBehaviour
 
     PathFinder pathFinder;
 
-    BoxCollider2D enemyCollider;
-    CircleCollider2D enemySight;
-    SpriteRenderer sprRenderer;
+    public void ToIdle()
+    {
+        state = MonsterState.IDLE;
+    }
+
+    public void Chasing()
+    {
+        state = MonsterState.CHASE;
+    }
+
+    public bool IsChasing()
+    {
+        return (state == MonsterState.CHASE);
+    }
 
     // Use this for initialization
     void Start()
@@ -28,9 +40,7 @@ public class Monster : MonoBehaviour
         //rb = GetComponent<Rigidbody2D>();
         cachedTransform = base.transform;
         pathFinder = GetComponent<PathFinder>();
-        enemyCollider = GetComponent<BoxCollider2D>();
-        enemySight = GetComponent<CircleCollider2D>();
-       // StartCoroutine(StateControl());
+        // StartCoroutine(StateControl());
     }
 
     void Idle()
@@ -61,8 +71,7 @@ public class Monster : MonoBehaviour
                 movePos = Floor.monsterFloor.GetRandomMonsterMoveTransform();
             }
 
-            pathFinder.SetMapManager(Floor.monsterFloor.mapManager);
-            pathFinder.SetDestination(movePos.position, walkSpeed, 90f, delegate()
+            pathFinder.SetDestination(Floor.monsterFloor.mapManager, movePos.position, walkSpeed, 90f, delegate()
             {
                 state = MonsterState.IDLE;
             });
@@ -72,6 +81,8 @@ public class Monster : MonoBehaviour
 
     void Chase()
     {
+        print("chase");
+        pathFinder.SetDestination(Floor.monsterFloor.mapManager, playerTransform.position, chaseSpeed, 90f);
     }
 
     void MoveToPlayerFloor()

@@ -68,6 +68,22 @@ public class MapManager : MonoBehaviour
 
     List<Tile> openTileList = new List<Tile>();
 
+    public bool InTheSameTile(Vector3 a, Vector3 b)
+    {
+        a.x -= cachedTransform.position.x;
+        a.y -= cachedTransform.position.y;
+        b.x -= cachedTransform.position.x;
+        b.y -= cachedTransform.position.y;
+
+        int aRow = Mathf.Clamp((int)a.x / TILE_SIZE, 0, TILE_COL - 1);
+        int aCol = Mathf.Clamp((int)a.y / TILE_SIZE, 0, TILE_ROW - 1);
+        int bRow = Mathf.Clamp((int)b.x / TILE_SIZE, 0, TILE_COL - 1);
+        int bCol = Mathf.Clamp((int)b.y / TILE_SIZE, 0, TILE_ROW - 1);
+
+
+        return (aRow == bRow && aCol == bCol);
+    }
+
     public void SetTileState(int col, int row, TileState state)
     {
         tiles[col, row].state = state;
@@ -100,7 +116,7 @@ public class MapManager : MonoBehaviour
 
             if (curTile == targetTile)
             {
-                for (Tile tile = curTile; tile != null; tile = tile.parent)
+                for (Tile tile = curTile; (tile != null && tile.parent != null) ; tile = tile.parent)
                 {
                     Vector2 pos = (Vector2.right * tile.col + Vector2.up * tile.row) * TILE_SIZE;
                     pos.x += cachedTransform.position.x;
