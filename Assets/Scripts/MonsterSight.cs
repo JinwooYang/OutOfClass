@@ -28,7 +28,6 @@ public class MonsterSight : MonoBehaviour
                 print(hit.collider.gameObject.name);
                 if(hit.collider.CompareTag("Player"))
                 {
-                    print("monster can see player");
                     monster.Chasing();
                 }
             }

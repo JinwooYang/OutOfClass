@@ -14,6 +14,11 @@ public class Player : MonoBehaviour
     enum PlayerStatus {IDLE, WALK, RUN};
     PlayerStatus status;
 
+    public bool isRunning()
+    {
+        return (status == PlayerStatus.RUN);
+    }
+
 	// Use this for initialization
 	void Awake () 
     {
