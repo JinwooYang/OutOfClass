@@ -3,24 +3,25 @@ using System.Collections;
 
 public class MonsterHearingArea : MonoBehaviour
 {
-    public Monster monster;
+    Transform cachedTransform;
+    Monster monster;
+
+    void Awake()
+    {
+        cachedTransform = base.transform;
+        monster = cachedTransform.parent.GetComponent<Monster>();
+    }
 
     void OnTriggerStay2D(Collider2D other)
     {
-        if(other.CompareTag("Player"))
+        if (other.CompareTag("Player"))
         {
-            Player player = other.GetComponent<Player>();
+            Player player = other.gameObject.GetComponent<Player>();
 
-            if(player.isRunning())
+            if (player.isRunning())
             {
-                monster.Chasing();
+                monster.CheckPlayerPos();
             }
         }
     }
-
-    void OnTriggerExit2D(Collider2D other)
-    {
-        monster.ToIdle();
-    }
-
 }

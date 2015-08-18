@@ -3,17 +3,17 @@ using System.Collections;
 
 public class MonsterSight : MonoBehaviour
 {
-    public Monster monster;
     public LayerMask collideLayer;
 
     Transform cachedTransform;
+    Monster monster;
 
-	// Use this for initialization
-	void Awake ()
+    void Awake ()
     {
         cachedTransform = base.transform;
-	}
-	
+        monster = cachedTransform.parent.GetComponent<Monster>();
+    }
+
     void OnTriggerStay2D(Collider2D other)
     {
         if(other.CompareTag("Player"))
@@ -28,7 +28,7 @@ public class MonsterSight : MonoBehaviour
                 print(hit.collider.gameObject.name);
                 if(hit.collider.CompareTag("Player"))
                 {
-                    monster.Chasing();
+                    monster.state = MonsterState.CHASE;
                 }
             }
         }
@@ -36,9 +36,9 @@ public class MonsterSight : MonoBehaviour
 
     void OnTriggerExit2D(Collider2D other)
     {
-        if (monster.IsChasing() && other.CompareTag("Player"))
+        if (monster.state == MonsterState.CHASE && other.CompareTag("Player"))
         {
-            monster.ToIdle();
+            monster.state = MonsterState.IDLE;
         }
     }
 }

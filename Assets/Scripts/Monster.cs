@@ -1,17 +1,18 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+public enum MonsterState { NONE, IDLE, PATROL, CHASE, CHECK };
 
 public class Monster : MonoBehaviour
 {
-    public Transform playerTransform;
+    public Player player;
     public float walkSpeed;
     public float chaseSpeed;
     public float patrolWaitSeconds;
 
-    //Rigidbody2D rb;
-    enum MonsterState { NONE, IDLE, PATROL, CHASE };
-    MonsterState state = MonsterState.IDLE;
+    Transform playerTransform;
+
+    public MonsterState state = MonsterState.IDLE;
 
     float idleTimer = 0f;
 
@@ -19,28 +20,20 @@ public class Monster : MonoBehaviour
 
     PathFinder pathFinder;
 
-    public void ToIdle()
+    public void CheckPlayerPos()
     {
-        state = MonsterState.IDLE;
+        state = MonsterState.CHECK;
+        pathFinder.SetDestination(Floor.monsterFloor.mapManager, playerTransform.position, chaseSpeed, 90f, delegate ()
+        {
+            state = MonsterState.IDLE;
+        });
     }
 
-    public void Chasing()
+    void Awake()
     {
-        state = MonsterState.CHASE;
-    }
-
-    public bool IsChasing()
-    {
-        return (state == MonsterState.CHASE);
-    }
-
-    // Use this for initialization
-    void Start()
-    {
-        //rb = GetComponent<Rigidbody2D>();
+        playerTransform = player.transform;
         cachedTransform = base.transform;
         pathFinder = GetComponent<PathFinder>();
-        // StartCoroutine(StateControl());
     }
 
     void Idle()
@@ -76,12 +69,10 @@ public class Monster : MonoBehaviour
                 state = MonsterState.IDLE;
             });
         }
-        //StartCoroutine(Patrol());
     }
 
     void Chase()
     {
-        print("chase");
         pathFinder.SetDestination(Floor.monsterFloor.mapManager, playerTransform.position, chaseSpeed, 90f);
     }
 
@@ -110,31 +101,13 @@ public class Monster : MonoBehaviour
                 Chase();
                 break;
 
+            case MonsterState.CHECK:
+                //업데이트에서 처리할 건 없음.
+                break;
+
             default:
+                Debug.Assert(false, "확인되지 않은 값이 Monster의 스위치케이스에서 발견");
                 break;
         }
     }
-
-    //void OnTriggerStay2D(Collider2D other)
-    //{
-    //    if(other.tag == "Player")
-    //    {
-    //        Vector2 moveDirection = (other.transform.position - transform.position).normalized;
-    //        //rb.velocity = moveDirection * chaseSpeed;
-
-    //        float radAngle = Mathf.Atan2(moveDirection.y, moveDirection.x);
-    //        rb.velocity = new Vector2(Mathf.Cos(radAngle), Mathf.Sin(radAngle)) * chaseSpeed;
-
-    //        transform.rotation = Quaternion.Euler(0f, 0f, radAngle * Mathf.Rad2Deg + 90f);
-    //    }
-    //}
-
-
-    //void OnTriggerExit2D(Collider2D other)
-    //{
-    //    if(other.tag == "Player")
-    //    {
-    //        rb.velocity = Vector2.zero;
-    //    }
-    //}
 }
